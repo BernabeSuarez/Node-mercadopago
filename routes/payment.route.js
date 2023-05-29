@@ -14,7 +14,7 @@ router.get('/success', (req, res) => {
 })
 
 
-router.get('/webhook', (req, res) => {
+router.post('/webhook', (req, res) => {
     res.send('WebHook')
 })
 
