@@ -1,5 +1,6 @@
 import mercadopago from "mercadopago"
 import * as dotenv from 'dotenv'
+import { MP_API_KEY } from '../config/config.js'
 
 dotenv.config()
 
@@ -12,7 +13,7 @@ export const createOrder = async (req, res) => {
     the API to identify and authenticate the user making the API call. */
 
     mercadopago.configure({
-        access_token: process.env.MERCADOPAGO_API_KEY
+        access_token: MP_API_KEY
     })
 
     /* This code is creating an order using the MercadoPago API. It is configuring the API with an
@@ -32,27 +33,27 @@ export const createOrder = async (req, res) => {
         ],
         // Devuelve a una url segun el estado que devuelva el pago
         back_urls: {
-            success: "https://localhost:3000/success",
+            success: "https://localhost:5500/success",
             failure: "https://localhost:3000/failure",
             pending: "https://localhost:3000/pending"
         },
-        notification_url: "https://2176-45-186-47-2.ngrok-free.app/webhook"
+        notification_url: "https://7d50-45-186-47-2.ngrok-free.app/webhook"
     })
     console.log(result)
-    res.send('Creating Order')
+    res.json(result.body)
+
 }
 
 export const receiveWebhooks = async (req, res) => {
     const payment = req.query
     try {
         if (payment.type === 'payment') {
-            const data = await mercadopago.payment.findById(payment['data id'])
+            const data = await mercadopago.payment.findById(payment['data.id'])
             console.log(data)
             //almacenar en Base de datos los datos del pago y del usuario
         }
         res.sendStatus(204)
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error)
         return res.sendStatus(500).json({ error: error.message })
     }
